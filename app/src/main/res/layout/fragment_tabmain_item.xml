@@ -12,4 +12,11 @@
         android:layout_gravity="center"
         android:text="加载完毕" />
 
+    <ListView
+        android:id="@+id/main_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
 </FrameLayout>
