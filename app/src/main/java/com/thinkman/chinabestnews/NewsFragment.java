@@ -11,13 +11,16 @@ import android.widget.TextView;
 import com.shizhefei.fragment.LazyFragment;
 import com.thinkman.chinabestnews.adapter.NewsAdapter;
 
-public class NewsFragment extends LazyFragment {
-	private TextView textView;
+import me.maxwin.view.XListView;
+
+public class NewsFragment extends LazyFragment implements XListView.IXListViewListener {
 	private int tabIndex;
 	public static final String INTENT_INT_INDEX = "intent_int_index";
 
-	private ListView mListView = null;
+	private XListView mListView = null;
 	private NewsAdapter mAdapter = null;
+
+	private Handler mHandler = null;
 
 	@Override
 	protected void onCreateViewLazy(Bundle savedInstanceState) {
@@ -25,14 +28,15 @@ public class NewsFragment extends LazyFragment {
 		setContentView(R.layout.fragment_tabmain_item);
 
 		tabIndex = getArguments().getInt(INTENT_INT_INDEX);
-		textView = (TextView) findViewById(R.id.fragment_mainTab_item_textView);
-		textView.setText("界面" + " " + tabIndex + " 加载完毕");
 
+		mHandler = new Handler();
 		initView();
 	}
 
 	private void initView() {
-		mListView = (ListView) this.findViewById(R.id.main_list);
+		mListView = (XListView) this.findViewById(R.id.main_list);
+		mListView.setPullLoadEnable(true);
+		mListView.setXListViewListener(this);
 		mAdapter = new NewsAdapter(this.getActivity());
 		mListView.setAdapter(mAdapter);
 	}
@@ -42,9 +46,25 @@ public class NewsFragment extends LazyFragment {
 		super.onDestroyViewLazy();
 	}
 
-	private Handler handler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
-			textView.setVisibility(View.VISIBLE);
-		}
-	};
+	public void onRefresh() {
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mListView.stopRefresh();
+				mListView.stopLoadMore();
+				mListView.setRefreshTime("2016-05-15");
+			}
+		}, 2000);
+	}
+
+	public void onLoadMore() {
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mListView.stopRefresh();
+				mListView.stopLoadMore();
+				mListView.setRefreshTime("2016-05-15");
+			}
+		}, 2000);
+	}
 }
