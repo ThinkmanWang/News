@@ -1,14 +1,17 @@
 package com.thinkman.chinabestnews;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.shizhefei.fragment.LazyFragment;
+import com.thinkman.chinabestnews.activity.NewsActivity;
 import com.thinkman.chinabestnews.adapter.NewsAdapter;
 
 import org.json.JSONException;
@@ -28,7 +31,9 @@ import com.google.gson.Gson;
 
 import com.thinkman.chinabestnews.models.*;
 
-public class NewsFragment extends LazyFragment implements XListView.IXListViewListener {
+public class NewsFragment extends LazyFragment
+		implements
+		XListView.IXListViewListener {
 	public static final String INTENT_INT_INDEX = "intent_int_index";
 
 	private XListView mListView = null;
@@ -58,6 +63,18 @@ public class NewsFragment extends LazyFragment implements XListView.IXListViewLi
 		mListView = (XListView) this.findViewById(R.id.main_list);
 		mListView.setPullLoadEnable(true);
 		mListView.setXListViewListener(this);
+		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				NewsModel news = mAdapter.getItem(position);
+
+				Intent intent = new Intent(NewsFragment.this.getActivity(), NewsActivity.class);
+				intent.putExtra(NewsActivity.TITLE, news.getTitle());
+				intent.putExtra(NewsActivity.URL, news.getUrl());
+
+				NewsFragment.this.getActivity().startActivity(intent);
+			}
+		});
 		mAdapter = new NewsAdapter(this.getActivity());
 		mListView.setAdapter(mAdapter);
 	}
