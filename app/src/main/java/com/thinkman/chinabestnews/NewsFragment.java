@@ -29,7 +29,6 @@ import com.google.gson.Gson;
 import com.thinkman.chinabestnews.models.*;
 
 public class NewsFragment extends LazyFragment implements XListView.IXListViewListener {
-	private int tabIndex;
 	public static final String INTENT_INT_INDEX = "intent_int_index";
 
 	private XListView mListView = null;
@@ -48,7 +47,7 @@ public class NewsFragment extends LazyFragment implements XListView.IXListViewLi
 		super.onCreateViewLazy(savedInstanceState);
 		setContentView(R.layout.fragment_tabmain_item);
 
-		tabIndex = getArguments().getInt(INTENT_INT_INDEX);
+		mTabIndex = getArguments().getInt(INTENT_INT_INDEX);
 
 		mHandler = new Handler();
 		initView();
