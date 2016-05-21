@@ -6,10 +6,11 @@ import android.text.TextUtils;
 import android.webkit.WebView;
 
 import com.thinkman.chinabestnews.R;
+import com.thinkman.chinabestnews.view.ProgressWebView;
 
 public class NewsActivity extends AppCompatActivity {
 
-    private WebView mWebView = null;
+    private ProgressWebView mWebView = null;
 
     //for webview content
     private String mUrl = null;
@@ -23,7 +24,9 @@ public class NewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
 
-        mWebView = (WebView) findViewById(R.id.main_webview);
+        mWebView = (ProgressWebView) findViewById(R.id.main_webview);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+
         mTitle = getIntent().getStringExtra(TITLE);
         mUrl = getIntent().getStringExtra(URL);
 
