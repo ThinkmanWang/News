@@ -50,7 +50,6 @@ public class NewsAdapter extends ThinkBaseAdapter<NewsModel> {
 
 }
 
-/*存放控件 的ViewHolder*/
 
 
 
