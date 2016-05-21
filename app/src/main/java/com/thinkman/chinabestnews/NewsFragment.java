@@ -62,6 +62,65 @@ public class NewsFragment extends LazyFragment implements XListView.IXListViewLi
 		mListView.setAdapter(mAdapter);
 	}
 
+	private void loadMore() {
+		final int nLoadPage = m_nCurrentPage + 1;
+
+		Request.Builder requestBuilder = new Request.Builder().url(Contant.URLS[mTabIndex]
+				.replaceAll("\\(\\$1\\)", Contant.APPKEY)
+				.replaceAll("\\(\\$2\\)", ""+Contant.PAGE_SIZE)
+				.replaceAll("\\(\\$3\\)", ""+nLoadPage));
+
+		Request request = requestBuilder.build();
+		Call httpCall= mOkHttpClient.newCall(request);
+
+		httpCall.enqueue(new Callback() {
+			@Override
+			public void onFailure(Call call, IOException e) {
+
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				if (null != response.cacheResponse()) {
+					String str = response.cacheResponse().toString();
+				} else {
+					final String szJson = response.body().string();
+					//String str = response.networkResponse().toString();
+
+					try {
+						JSONObject jsonNewsList = new JSONObject(szJson);
+
+						if (200 != jsonNewsList.getInt("code")) {
+							return;
+						}
+
+						Gson gson = new Gson();
+						final NewsListModel newsList = gson.fromJson(szJson, NewsListModel.class);
+						mHandler.post(new Runnable() {
+							@Override
+							public void run() {
+
+								m_nCurrentPage +=1;
+
+								mAdapter.addAll(newsList.getNewslist());
+								mHandler.sendEmptyMessageDelayed(1, 1000);
+
+								mListView.stopRefresh();
+								mListView.stopLoadMore();
+								mListView.setRefreshTime("2016-05-15");
+
+							}
+						});
+					} catch (JSONException ex) {
+
+					}
+				}
+
+
+			}
+		});
+	}
+
 	private void initData() {
 		m_nCurrentPage = 1;
 		Request.Builder requestBuilder = new Request.Builder().url(Contant.URLS[mTabIndex]
@@ -103,6 +162,11 @@ public class NewsFragment extends LazyFragment implements XListView.IXListViewLi
 								mAdapter.clear();
 								mAdapter.addAll(newsList.getNewslist());
 								mHandler.sendEmptyMessageDelayed(1, 1000);
+
+								mListView.stopRefresh();
+								mListView.stopLoadMore();
+								mListView.setRefreshTime("2016-05-15");
+
 							}
 						});
 					} catch (JSONException ex) {
@@ -121,24 +185,12 @@ public class NewsFragment extends LazyFragment implements XListView.IXListViewLi
 	}
 
 	public void onRefresh() {
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				mListView.stopRefresh();
-				mListView.stopLoadMore();
-				mListView.setRefreshTime("2016-05-15");
-			}
-		}, 2000);
+		initData();
+
+
 	}
 
 	public void onLoadMore() {
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				mListView.stopRefresh();
-				mListView.stopLoadMore();
-				mListView.setRefreshTime("2016-05-15");
-			}
-		}, 2000);
+		loadMore();
 	}
 }
