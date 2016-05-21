@@ -66,7 +66,7 @@ public class NewsFragment extends LazyFragment
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				NewsModel news = mAdapter.getItem(position);
+				NewsModel news = mAdapter.getItem(position - 1);
 
 				Intent intent = new Intent(NewsFragment.this.getActivity(), NewsActivity.class);
 				intent.putExtra(NewsActivity.TITLE, news.getTitle());
