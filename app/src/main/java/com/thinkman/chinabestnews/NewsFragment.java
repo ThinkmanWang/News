@@ -69,7 +69,10 @@ public class NewsFragment extends LazyFragment
 				NewsModel news = mAdapter.getItem(position - 1);
 
 				Intent intent = new Intent(NewsFragment.this.getActivity(), NewsActivity.class);
+				intent.putExtra(NewsActivity.CTIME, news.getCtime());
 				intent.putExtra(NewsActivity.TITLE, news.getTitle());
+				intent.putExtra(NewsActivity.DESCRIPTION, news.getDescription());
+				intent.putExtra(NewsActivity.PIC_URL, news.getPicUrl());
 				intent.putExtra(NewsActivity.URL, news.getUrl());
 
 				NewsFragment.this.getActivity().startActivity(intent);
