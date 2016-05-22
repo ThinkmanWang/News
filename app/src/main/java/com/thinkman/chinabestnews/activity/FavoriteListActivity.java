@@ -48,6 +48,7 @@ public class FavoriteListActivity extends AppCompatActivity
                 intent.putExtra(NewsActivity.PIC_URL, news.getPicUrl());
                 intent.putExtra(NewsActivity.URL, news.getUrl());
 
+                intent.putExtra(NewsActivity.SHOW_FAVORITE, false);
                 FavoriteListActivity.this.startActivity(intent);
             }
         });
