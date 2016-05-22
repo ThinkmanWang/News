@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.shizhefei.view.indicator.FragmentListPageAdapter;
@@ -29,6 +30,9 @@ import com.shizhefei.view.indicator.slidebar.ColorBar;
 import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -71,13 +75,25 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private static boolean mBackKeyPressed = false;
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(!mBackKeyPressed){
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mBackKeyPressed = true;
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mBackKeyPressed = false;
+                    }
+                }, 1000);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
