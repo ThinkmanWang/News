@@ -1,6 +1,9 @@
 package com.thinkman.chinabestnews.activity;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -45,15 +48,22 @@ public class NewsActivity extends AppCompatActivity {
         m_fabFavorite = (FloatingActionButton) findViewById(R.id.fab);
         m_fabFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                long nRet = FavoritesDbUtils.insertFavorite(NewsActivity.this, mNews);
-                if (-2 == nRet) {
-                    Toast.makeText(NewsActivity.this, "收藏已经存在", Toast.LENGTH_SHORT).show();
-                } else if (-1 == nRet || 0 == nRet) {
-                    Toast.makeText(NewsActivity.this, "添加收藏失败", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(NewsActivity.this, "添加收藏成功", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        long nRet = FavoritesDbUtils.insertFavorite(NewsActivity.this, mNews);
+                        if (-2 == nRet) {
+                            mHandler.sendEmptyMessage(MSG_FAVORITE_ALREADY_EXISTS);
+                        } else if (-1 == nRet || 0 == nRet) {
+                            mHandler.sendEmptyMessage(MSG_ADD_FAVORITE_FAILED);
+                        } else {
+                            mHandler.sendEmptyMessage(MSG_ADD_FAVORITE_SUCCESS);
+                        }
+                    }
+                }).start();
+
+
             }
         });
 
@@ -64,4 +74,26 @@ public class NewsActivity extends AppCompatActivity {
             mWebView.loadUrl(mUrl);
         }
     }
+
+    public static final int MSG_ADD_FAVORITE_SUCCESS = 1;
+    public static final int MSG_ADD_FAVORITE_FAILED = 2;
+    public static final int MSG_FAVORITE_ALREADY_EXISTS = 3;
+    Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_ADD_FAVORITE_SUCCESS:
+                    Snackbar.make(m_fabFavorite, "Add to Favorites success!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    break;
+                case MSG_ADD_FAVORITE_FAILED:
+                    Snackbar.make(m_fabFavorite, "Add to Favorites failed!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    break;
+                case MSG_FAVORITE_ALREADY_EXISTS:
+                    Snackbar.make(m_fabFavorite, "Favorites already exists", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    break;
+            }
+        }
+    };
 }
