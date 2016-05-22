@@ -1,1 +1,1 @@
-include ':app', ':XListView'
+include ':app', ':XListView', ':JPushSample'

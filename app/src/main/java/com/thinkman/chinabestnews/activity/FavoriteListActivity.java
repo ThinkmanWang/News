@@ -21,7 +21,7 @@ public class FavoriteListActivity extends AppCompatActivity
     private XListView mListView = null;
     private NewsAdapter mAdapter = null;
 
-    private static final int PAGE_SIZE = 100;
+    private static final int PAGE_SIZE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
