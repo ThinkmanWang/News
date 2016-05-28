@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.gson.Gson;
+import com.thinkman.chinabestnews.activity.NewsActivity;
 import com.thinkman.chinabestnews.models.NewsListModel;
 import com.thinkman.chinabestnews.models.NewsModel;
 
@@ -120,6 +121,19 @@ public class MyReceiver extends BroadcastReceiver {
 		rv.setTextViewText(R.id.text_content, news.getTitle());
 		//rv.setTextViewText(R.id.text_content_time, StringUtils.longTime2String(System.currentTimeMillis() / 1000, StringUtils.dateFormat3));
 		myNotify.contentView = rv;
+
+		Intent intent = new Intent(mContext, NewsActivity.class);
+		intent.putExtra(NewsActivity.CTIME, news.getCtime());
+		intent.putExtra(NewsActivity.TITLE, news.getTitle());
+		intent.putExtra(NewsActivity.DESCRIPTION, news.getDescription());
+		intent.putExtra(NewsActivity.PIC_URL, news.getPicUrl());
+		intent.putExtra(NewsActivity.URL, news.getUrl());
+
+		//intent.putExtra(Constant.ORDER_ID, orderDetailModel.getId());
+		PendingIntent contentIntent = PendingIntent.getActivity(mContext, requestCode,
+				intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		myNotify.contentIntent = contentIntent;
 
 		manager.notify(requestCode, myNotify);
 	}
