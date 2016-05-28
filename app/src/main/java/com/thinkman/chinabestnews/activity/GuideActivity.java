@@ -1,5 +1,6 @@
 package com.thinkman.chinabestnews.activity;
 
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 
 import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
+import com.thinkman.chinabestnews.MainActivity;
 import com.thinkman.chinabestnews.R;
 
 
@@ -22,6 +24,9 @@ import com.shizhefei.view.indicator.Indicator;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorPagerAdapter;
 import com.shizhefei.view.indicator.IndicatorViewPager.IndicatorViewPagerAdapter;
+import com.thinkman.chinabestnews.utils.SharedPreferencesUtil;
+
+import java.util.Objects;
 
 
 public class GuideActivity extends AppCompatActivity {
@@ -33,6 +38,14 @@ public class GuideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
+
+        if ((boolean)SharedPreferencesUtil.getData(this, "first_launch", true)) {
+
+        } else {
+            Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.guide_viewPager);
         Indicator indicator = (Indicator) findViewById(R.id.guide_indicator);
@@ -59,6 +72,19 @@ public class GuideActivity extends AppCompatActivity {
                 convertView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             }
             convertView.setBackgroundResource(images[position]);
+
+            if (3 == position) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        SharedPreferencesUtil.saveData(GuideActivity.this, "first_launch", false);
+
+                        Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+            }
+
             return convertView;
         }
 
