@@ -42,7 +42,7 @@ public class GuideActivity extends AppCompatActivity {
         if ((boolean)SharedPreferencesUtil.getData(this, "first_launch", true)) {
 
         } else {
-            Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+            Intent intent = new Intent(GuideActivity.this, WelcomeActivity.class);
             startActivity(intent);
             finish();
         }
@@ -78,7 +78,7 @@ public class GuideActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         SharedPreferencesUtil.saveData(GuideActivity.this, "first_launch", false);
 
-                        Intent intent = new Intent(GuideActivity.this, MainActivity.class);
+                        Intent intent = new Intent(GuideActivity.this, WelcomeActivity.class);
                         startActivity(intent);
                         finish();
                     }
