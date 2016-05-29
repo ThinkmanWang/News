@@ -30,6 +30,11 @@ import com.shizhefei.view.indicator.ScrollIndicatorView;
 import com.shizhefei.view.indicator.slidebar.ColorBar;
 import com.shizhefei.view.indicator.transition.OnTransitionTextListener;
 import com.thinkman.chinabestnews.activity.FavoriteListActivity;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.utils.Log;
 
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -138,7 +143,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            UMImage image = new UMImage(MainActivity.this, "http://www.umeng.com/images/pic/social/integrated_3.png");
+            new ShareAction(this).setDisplayList(SHARE_MEDIA.SINA,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL)
+                    .withText("来自友盟分享面板")
+                    .withMedia(image)
+                    .setCallback(umShareListener)
+                    .open();
         } else if (id == R.id.nav_send) {
 
         }
@@ -147,6 +157,28 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private UMShareListener umShareListener = new UMShareListener() {
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Log.d("plat", "platform" + platform);
+            if(platform.name().equals("WEIXIN_FAVORITE")){
+                Toast.makeText(MainActivity.this,platform + " 收藏成功啦",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(MainActivity.this,platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(MainActivity.this,platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
 
