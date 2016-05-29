@@ -15,6 +15,11 @@ import com.thinkman.chinabestnews.R;
 import com.thinkman.chinabestnews.models.NewsModel;
 import com.thinkman.chinabestnews.utils.FavoritesDbUtils;
 import com.thinkman.chinabestnews.view.ProgressWebView;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.utils.Log;
 
 public class NewsActivity extends AppCompatActivity {
 
@@ -65,6 +70,12 @@ public class NewsActivity extends AppCompatActivity {
                     }
                 }).start();
 
+                UMImage image = new UMImage(NewsActivity.this, mNews.getPicUrl());
+                new ShareAction(NewsActivity.this).setDisplayList(SHARE_MEDIA.SINA,SHARE_MEDIA.WEIXIN,SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL)
+                        .withText(mNews.getUrl())
+                        .withMedia(image)
+                        .setCallback(umShareListener)
+                        .open();
 
             }
         });
@@ -83,6 +94,28 @@ public class NewsActivity extends AppCompatActivity {
             mWebView.loadUrl(mUrl);
         }
     }
+
+    private UMShareListener umShareListener = new UMShareListener() {
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Log.d("plat", "platform" + platform);
+            if(platform.name().equals("WEIXIN_FAVORITE")){
+                Toast.makeText(NewsActivity.this,platform + " 收藏成功啦",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(NewsActivity.this, platform + " 分享成功啦", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(NewsActivity.this,platform + " 分享失败啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(NewsActivity.this,platform + " 分享取消了", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public static final int MSG_ADD_FAVORITE_SUCCESS = 1;
     public static final int MSG_ADD_FAVORITE_FAILED = 2;
